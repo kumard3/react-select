@@ -1,50 +1,59 @@
 import React, { useRef, useState } from "react";
 import useOnClickOutside from "../hooks/useClickOutSide";
-function Select(props: any) {
-  //   const [test, setTest] = useState("");
-  const [toggle, setToggle] = useState(false);
+export const Select = React.forwardRef(
+  ({ register, data, setValue, registerName }: any) => {
+    const [toggle, setToggle] = useState(false);
 
-  const ref = useRef();
-
-  useOnClickOutside(ref, () => setToggle(false));
-  return (
-    <div className="px-10 container mx-auto max-w-full relative">
-      <div className="max-w-full relative">
-        <input
-          value={props.test}
-          readOnly
-          className="border w-full py-2 pl-3 rounded-lg cursor-pointer"
-          onClick={() => setToggle(!toggle)}
-          onChange={(e) => props.setTest(e.target.value)}
-        />
-        {toggle && (
+    const ref = useRef();
+    // const To = useCallback(
+    //   (n: any) => {
+    //     setValue(registerName, n);
+    //     setToggle(false);
+    //   },
+    //   [registerName, setValue]
+    // );
+    function handleToggle(n: string) {
+      setValue(registerName, n);
+      setToggle(false);
+    }
+    useOnClickOutside(ref, () => setToggle(false));
+    return (
+      <>
+        <div className="px-10 container mx-auto max-w-full relative text-black">
           <div
             //@ts-ignore
             ref={ref}
-            className="mt-4 z-10 absolute border-inputBorder border bg-white w-full p-2 rounded-md"
+            className="max-w-full relative"
           >
-            <ul aria-keyshortcuts="list">
-              {props.data.map((item: any) => {
-                return (
-                  <li
-                    tabIndex={0}
-                    className="py-2 hover:bg-gray-200 pl-3 rounded-md cursor-pointer"
-                    onClick={() => {
-                      props.setTest(item.label);
-                      setToggle(false);
-                    }}
-                    key={item.value}
-                  >
-                    {item.label}
-                  </li>
-                );
-              })}
-            </ul>
+            <input
+              {...register(registerName)}
+              readOnly
+              className="border w-full py-2 pl-3 rounded-lg cursor-pointer"
+              onClick={() => setToggle(!toggle)}
+            />
+            {toggle && (
+              <div className="mt-4 z-10 absolute border-inputBorder border bg-white w-full p-2 rounded-md">
+                <ul aria-keyshortcuts="list">
+                  {data.map((item: any) => {
+                    return (
+                      <li
+                        tabIndex={0}
+                        className="py-2 hover:bg-gray-200 pl-3 rounded-md cursor-pointer"
+                        onClick={() => handleToggle(item.label)}
+                        key={item.value}
+                      >
+                        {item.label}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
           </div>
-        )}
-      </div>
-    </div>
-  );
-}
+        </div>
+      </>
+    );
+  }
+);
 
-export default React.memo(Select);
+// export default React.memo(Select);
